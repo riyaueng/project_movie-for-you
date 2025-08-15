@@ -12,13 +12,13 @@ export type TMovies = {
 
 // # ---------- Movie-Liste in HTML ausgeben ----------
 
-function movieList(movieArrays: [string, string, string, string, string[], string][]) {
+function movieList(movieArrays: [string, string, string, string, string[], string][]): void {
   const outputCollection = document.getElementById("music_collection") as HTMLElement
-
-  movieArrays.forEach(([title, year, director, duration, genre, rating]) => {
+  outputCollection.innerHTML = ""
+  movieArrays.map(([title, year, director, duration, genre, rating]) => {
     // * ------ Spacing für das Genre-Array -----
 
-    genre.forEach((element: string, index) => {
+    genre.map((element: string, index) => {
       genre[index] = " " + element
     })
 
@@ -47,7 +47,8 @@ movieList(movies)
 // # ---------- Mit YEAR UP sortieren ----------
 
 function sortMovieYearUp(movieArrays: [string, string, string, string, string[], string][]) {
-  const sortedYears = movieArrays.sort((movieA, movieB) => {
+  const sortedYears = [...movieArrays]
+  sortedYears.sort((movieA, movieB) => {
     return Number(movieA[1]) - Number(movieB[1])
   })
   return sortedYears
@@ -60,12 +61,14 @@ const yearUpBtn = document.querySelector("#year_up") as HTMLButtonElement
 yearUpBtn.addEventListener("click", () => {
   const outputSortMovieYearUp = sortMovieYearUp(movies)
   movieList(outputSortMovieYearUp)
+  console.log(outputSortMovieYearUp)
 })
 
 // # ---------- Mit YEAR DOWN sortieren ----------
 
 function sortMovieYearDown(movieArrays: [string, string, string, string, string[], string][]) {
-  const sortedYears = movieArrays.sort((movieA, movieB) => {
+  const sortedYears = [...movieArrays]
+  sortedYears.sort((movieA, movieB) => {
     return Number(movieB[1]) - Number(movieA[1])
   })
   return sortedYears
@@ -78,12 +81,14 @@ const yearDownBtn = document.querySelector("#year_down") as HTMLButtonElement
 yearDownBtn.addEventListener("click", () => {
   const outputSortMovieYearDown = sortMovieYearDown(movies)
   movieList(outputSortMovieYearDown)
+  console.log(outputSortMovieYearDown)
 })
 
 // # ---------- Mit BEST RATE sortieren ----------
 
 function sortMovieRate(movieArrays: [string, string, string, string, string[], string][]) {
-  const sortedRate = movieArrays.sort((movieA, movieB) => {
+  const sortedRate = [...movieArrays]
+  sortedRate.sort((movieA, movieB) => {
     return Number(movieB[movieB.length - 1]) - Number(movieA[movieA.length - 1])
   })
   return sortedRate
@@ -105,7 +110,7 @@ const searchBtn = document.querySelector("#btn_search") as HTMLButtonElement
 
 function filterMovies(input: string) {
   const inputLowerCase = input.toLowerCase()
-  const genresArray = Array.from(new Set(movies.flatMap(([, , , , Genres]) => Genres))).sort()
+  // const genresArray = Array.from(new Set(movies.flatMap(([, , , , Genres]) => Genres))).sort()
 
   // * ----- Mit Search-Feld Genres suchen -----
 
@@ -115,7 +120,7 @@ function filterMovies(input: string) {
   // })
 
   return movies.filter(
-    ([Title, Year, Director, genreElement]) =>
+    ([Title, Year, Director, [genreElement]]) =>
       Title.toLowerCase().includes(inputLowerCase) ||
       Year.includes(inputLowerCase) ||
       Director.toLowerCase().includes(inputLowerCase) ||
